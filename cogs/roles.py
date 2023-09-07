@@ -405,7 +405,7 @@ class Roles(Base, commands.Cog):
             total_overwrites += len(channel_overwrites)
 
         output = []
-        channels_output = dict(sorted(channels_output.items(), key=lambda item: item[1], reverse=True))
+        channels_output = dict(sorted(channels_output.items(), key=lambda item: int(item[1]), reverse=True))
         with io.StringIO() as output:
             output.write(f"User overwrites total:{user_overwrites}\n")
             output.write(f"Total overwrites:{total_overwrites}\n\n")
