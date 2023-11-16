@@ -20,19 +20,21 @@ class NotAdminError(commands.CommandError):
 
 
 def is_bot_admin(
-    ctx: Union[commands.Context, disnake.ApplicationCommandInteraction],
     raise_exception: bool = True
 ):
     """
     Check if user is bot admin.
     if raise_exception=False return False instead of raising error
     """
-    if ctx.author.id in config.admin_ids:
-        return True
+    async def predicate(ctx: Union[commands.Context, disnake.ApplicationCommandInteraction]):
+        if ctx.author.id in config.admin_ids:
+            return True
 
-    if not raise_exception:
-        return False
-    raise NotAdminError
+        if not raise_exception:
+            return False
+        raise NotAdminError
+
+    return commands.check(predicate)
 
 
 def role_check(ctx, roles, MissingPermission, raise_exception=True):

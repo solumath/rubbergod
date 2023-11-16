@@ -18,7 +18,7 @@ from config.messages import Messages
 from database.error import ErrorLogDB
 from features.error import ErrorLogger
 from features.git import Git
-from permissions import permission_check
+from permissions.permission_check import is_bot_admin
 
 boottime = datetime.now().replace(microsecond=0)
 
@@ -32,7 +32,7 @@ class System(Base, commands.Cog):
 
         self.unloadable_cogs = ["system"]
 
-    @commands.check(permission_check.is_bot_admin)
+    @commands.check(is_bot_admin)
     @commands.slash_command(name="git")
     async def git(self, inter):
         pass
@@ -50,7 +50,7 @@ class System(Base, commands.Cog):
         for part in pull_parts[1:]:
             await inter.send(f"```{part}```")
 
-    @commands.check(permission_check.is_bot_admin)
+    @commands.check(is_bot_admin)
     @commands.slash_command(name="get_logs", description=Messages.system_get_logs_brief)
     async def get_logs(
         self,
@@ -78,7 +78,7 @@ class System(Base, commands.Cog):
 
         await inter.send(file=disnake.File("service_logs.txt"))
 
-    @commands.check(permission_check.is_bot_admin)
+    @commands.check(is_bot_admin)
     @commands.slash_command(name="shutdown", description=Messages.shutdown_brief)
     async def shutdown(self, inter: disnake.ApplicationCommandInteraction):
         await inter.send("Shutting down...")
@@ -99,7 +99,7 @@ class System(Base, commands.Cog):
 
         return all_selects
 
-    @commands.check(permission_check.is_bot_admin)
+    @is_bot_admin(False)
     @commands.slash_command(name="cogs", description=Messages.cogs_brief, guild_ids=[Base.config.guild_id])
     async def cogs(self, inter: disnake.ApplicationCommandInteraction):
         """
