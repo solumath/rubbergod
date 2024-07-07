@@ -23,5 +23,17 @@ jobs:
           username: ${{ secrets.PRODUCTION_USERNAME }}
           port: 22
           script: |
-            cd rubbergod
-            ./deployment.sh
+            echo "================== Pull Changes =================="
+            cd Rubbergod
+            git pull
+
+            echo "================== Build and Push Image =================="
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker build . --tag ghcr.io/vutfitdiscord/rubbergod:latest
+            docker push ghcr.io/vutfitdiscord/rubbergod:latest
+
+            echo "================== Restart Services =================="
+            docker compose down && docker compose up --build -d
+
+            echo "================== Clean Up Images =================="
+            echo "y" | docker image prune -a
