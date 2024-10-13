@@ -205,8 +205,7 @@ class StreamLinks(Base, commands.Cog):
 
         utils.embed.add_author_footer(embed, inter.author)
         embed.timestamp = datetime.now(timezone.utc)
-        channel = self.bot.get_channel(self.config.log_channel)
-        await channel.send(embed=embed)
+        await self.log_channel.send(embed=embed)
         await inter.edit_original_response(content=MessagesCZ.update_success)
 
     @commands.check(permission_check.helper_plus)
@@ -238,8 +237,7 @@ class StreamLinks(Base, commands.Cog):
         embed.add_field(name="Popis", value=stream.description[:1024])
         embed.add_field(name="Odkaz", value=f"[link]({stream.link})", inline=False)
         embed.timestamp = datetime.now(timezone.utc)
-        channel = self.bot.get_channel(self.config.log_channel)
-        await channel.send(embed=embed)
+        await self.log_channel.send(embed=embed)
 
     async def get_user_string(self, user):
         users = await utils.user.get_users_from_tag(self.bot, user)
