@@ -2,7 +2,6 @@
 Cog implementing streamlinks system. List streams for a subject.
 """
 
-import re
 from datetime import datetime, timezone
 
 import disnake
@@ -25,9 +24,6 @@ from utils import cooldowns
 
 from .messages_cz import MessagesCZ
 
-# Pattern: "AnyText | [Subject] Page: CurrentPage / {TotalPages}"
-pagination_regex = re.compile(r"^\[([^\]]*)\]\s*Page:\s*(\d*)\s*\/\s*(\d*)")
-
 subjects: list[tuple[str]] = []
 subjects_with_stream: list[tuple[str]] = []
 
@@ -48,15 +44,6 @@ class StreamLinks(Base, commands.Cog):
         self.check = room_check.RoomCheck(bot)
         subjects = SubjectDB.get_all()
         subjects_with_stream = StreamLinkDB.get_subjects_with_stream()
-
-    @cooldowns.default_cooldown
-    @commands.group(
-        aliases=["streamlist", "steamlink", "streamlink", "steamlinks", "stream", "steam", "links", "sl"]
-    )
-    async def streamlinks(self, ctx: commands.Context):
-        if ctx.invoked_subcommand is None:
-            command_id = utils.general.get_command_id(self.bot, "streamlinks")
-            await ctx.reply(MessagesCZ.moved_command(name="streamlinks", id=command_id))
 
     @cooldowns.default_cooldown
     @commands.slash_command(name="streamlinks", brief=MessagesCZ.streamlinks_brief)
