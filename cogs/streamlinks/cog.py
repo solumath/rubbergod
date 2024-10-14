@@ -22,6 +22,7 @@ from permissions import permission_check, room_check
 from rubbergod import Rubbergod
 from utils import cooldowns
 
+from . import features
 from .messages_cz import MessagesCZ
 
 subjects: list[tuple[str]] = []
@@ -104,11 +105,14 @@ class StreamLinks(Base, commands.Cog):
         date: str = commands.Param(default=None, description=MessagesCZ.date_format),
     ):
         link = utils.general.clear_link_escape(link)
-        try:
-            requests.get(link)
-        except Exception:
-            await inter.edit_original_response(MessagesCZ.invalid_link)
-            return
+        title, created_at, duration, thumbnail_url = await features.get_youtube_video(
+            self.bot.rubbergod_session, self.config.google_api_key, link
+        )
+        # try:
+        #     requests.get(link)
+        # except Exception:
+        #     await inter.edit_original_response(MessagesCZ.invalid_link)
+        #     return
 
         if StreamLinkDB.exists_link(link):
             await inter.edit_original_response(MessagesCZ.add_link_exists(user=inter.author.id))
@@ -118,16 +122,7 @@ class StreamLinks(Base, commands.Cog):
         if "@" in user:
             user = await self.get_user_string(user)
 
-        link_data = self.get_link_data(link)
-        if date is not None:
-            link_data["upload_date"] = datetime.strptime(date, "%d.%m.%Y")
-        else:
-            if link_data["upload_date"] is None:
-                link_data["upload_date"] = datetime.now(timezone.utc)
-
-        StreamLinkDB.create(
-            subject.lower(), link, user, description, link_data["image"], link_data["upload_date"]
-        )
+        StreamLinkDB.create(subject.lower(), link, user, description, thumbnail_url, created_at)
         await inter.edit_original_response(content=MessagesCZ.add_success)
 
     @commands.check(permission_check.helper_plus)

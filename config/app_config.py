@@ -80,6 +80,7 @@ class Config:
     email_smtp_server: str = get_attr(toml_dict, "email", "smtp_server")
     email_smtp_port: int = get_attr(toml_dict, "email", "smtp_port")
     email_pass: str = get_attr(toml_dict, "email", "pass")
+    google_api_key: str = get_attr(toml_dict, "email", "api_key")
 
     # Extensions loaded on bot start
     extensions: List[str] = get_attr(toml_dict, "cogs", "extensions")
