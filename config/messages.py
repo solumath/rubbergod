@@ -44,4 +44,4 @@ class Messages(metaclass=Formatable):
                         "<#{bot_room}>\n"
 
     # MEME
-    upgraded_pocitani_caught_deleting = "Podvádět mazáním zpráv je zakázáno. Začínáme znovu: "
+    upgraded_pocitani_caught_deleting = "Podvádět mazáním zpráv je zakázáno. Začínáme znovuff: "
