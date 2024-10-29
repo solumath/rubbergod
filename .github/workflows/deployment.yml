@@ -6,6 +6,17 @@ on:
   workflow_dispatch:
 
 jobs:
+  no_deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check PR has no-deployment label
+      id: is_deployment_required
+      uses: shioyang/check-pr-labels-on-push-action@v1.0.12
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        labels: '["no-deployment"]'
+      timeout-minutes: 5
+
   pre_commit_ci:
       uses: vutfitdiscord/rubbergod/.github/workflows/lint.yml@main
 
@@ -13,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     needs: pre_commit_ci
-    if: github.ref == 'refs/heads/main' && !contains(github.event.pull_request.labels.*.name, 'no-deployment')
+    if: github.ref == 'refs/heads/main' && !steps.no_deployment.is_deployment_required
     steps:
       - name: Execute deployment on SSH
         uses: appleboy/ssh-action@v1.1.0
