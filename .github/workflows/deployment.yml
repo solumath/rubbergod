@@ -16,8 +16,6 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         labels: '["no-deployment"]'
       timeout-minutes: 5
-      outputs:
-        steps.is_deployment_required.outputs.result
 
   pre_commit_ci:
       uses: vutfitdiscord/rubbergod/.github/workflows/lint.yml@main
